@@ -12,8 +12,8 @@ import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static specs.BaseSpec.baseRequestSpec;
-import static specs.Login.LoginSpec.successfullLoginResponseSpec;
-import static specs.Logout.LogoutSpec.*;
+import static specs.login.LoginSpec.successfullLoginResponseSpec;
+import static specs.logout.LogoutSpec.*;
 import static tests.TestData.*;
 
 public class LogoutTests extends TestBase {

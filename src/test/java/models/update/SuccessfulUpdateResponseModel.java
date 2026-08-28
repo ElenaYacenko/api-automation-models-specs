@@ -1,4 +1,4 @@
-package models.Update;
+package models.update;
 
 public record SuccessfulUpdateResponseModel(Integer id,
                                             String username,

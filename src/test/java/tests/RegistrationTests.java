@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static specs.BaseSpec.baseRequestSpec;
-import static specs.Registration.RegistrationSpec.*;
+import static specs.registration.RegistrationSpec.*;
 import static tests.TestData.expectedError;
 import static tests.TestData.expectedErrorPass;
 

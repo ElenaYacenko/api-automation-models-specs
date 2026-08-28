@@ -1,6 +1,6 @@
 package tests;
 
-import models.Update.*;
+import models.update.*;
 import models.login.LoginBodyModel;
 import models.login.SuccessfulLoginResponseModel;
 import models.registration.RegistrationBodyModel;
@@ -11,10 +11,10 @@ import org.junit.jupiter.api.*;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static specs.BaseSpec.baseRequestSpec;
-import static specs.Login.LoginSpec.successfullLoginResponseSpec;
-import static specs.Registration.RegistrationSpec.successfulRegistrationResponseSpec;
-import static specs.Update.UpdateSpec.badRequestResponseSpec;
-import static specs.Update.UpdateSpec.successfulUpdateResponseSpec;
+import static specs.login.LoginSpec.successfullLoginResponseSpec;
+import static specs.registration.RegistrationSpec.successfulRegistrationResponseSpec;
+import static specs.update.UpdateSpec.badRequestResponseSpec;
+import static specs.update.UpdateSpec.successfulUpdateResponseSpec;
 import static tests.TestData.*;
 
 public class UpdateUserTests extends TestBase {

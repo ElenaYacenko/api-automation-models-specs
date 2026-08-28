@@ -1,4 +1,4 @@
-package models.Update;
+package models.update;
 
 import java.util.List;
 

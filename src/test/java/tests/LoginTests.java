@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static specs.BaseSpec.baseRequestSpec;
-import static specs.Login.LoginSpec.*;
+import static specs.login.LoginSpec.*;
 import static tests.TestData.*;
 
 public class LoginTests extends TestBase {
