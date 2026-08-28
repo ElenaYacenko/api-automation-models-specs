@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "$ref": "#/definitions/Welcome2",
+  "definitions": {
+    "Welcome2": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "username": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "firstName": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "lastName": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "email": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "email",
+        "firstName",
+        "lastName",
+        "username"
+      ],
+      "title": "Welcome2"
+    }
+  }
+}
