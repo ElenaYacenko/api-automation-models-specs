@@ -38,6 +38,18 @@ public class AuthApiClient {
                 .path("refresh");
     }
 
+    @Step("Авторизация и получение access-токена")
+    public String loginAndGetAccessToken(LoginBodyModel loginBody) {
+        return given(baseRequestSpec)
+                .body(loginBody)
+                .when()
+                .post("/auth/token/")
+                .then()
+                .spec(successfullLoginResponseSpec)
+                .extract()
+                .path("access");
+    }
+
     @Step("[API] Попытка авторизации с неверными учётными данными POST /auth/token/")
     public WrongCredentialsLoginResponseModel loginWrongCredentials(LoginBodyModel loginBody) {
         return given(baseRequestSpec)
