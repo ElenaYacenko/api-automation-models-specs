@@ -2,7 +2,10 @@ package api;
 
 import io.qameta.allure.Step;
 import models.login.*;
+import models.logout.EmptyTokenLogoutResponseModel;
+import models.logout.InvalidTokenLogoutResponseModel;
 import models.logout.LogoutBodyModel;
+import models.logout.SuccessfulLogoutResponseModel;
 
 import static io.restassured.RestAssured.given;
 import static specs.BaseSpec.baseRequestSpec;
@@ -23,7 +26,7 @@ public class AuthApiClient {
                 .as(SuccessfulLoginResponseModel.class);
     }
 
-    @Step("[API] Авторизация и получение токена")
+    @Step("[API] Авторизация и получение refresh токена")
     public String loginAndGetRefreshToken(LoginBodyModel loginBody) {
         return given(baseRequestSpec)
                 .body(loginBody)
@@ -72,12 +75,50 @@ public class AuthApiClient {
     }
 
     @Step("[API] Отправка запроса logout")
-    public void logout(LogoutBodyModel logoutBody) {
-        given(baseRequestSpec)
+    public SuccessfulLogoutResponseModel logout(LogoutBodyModel logoutBody) {
+        return given(baseRequestSpec)
                 .body(logoutBody)
                 .when()
                 .post("/auth/logout/")
                 .then()
-                .spec(successfullLogoutResponseSpec);
+                .spec(successfullLogoutResponseSpec)
+                .extract()
+                .as(SuccessfulLogoutResponseModel.class);
+    }
+
+    @Step("[API] Попытка logout с невалидным токеном")
+    public InvalidTokenLogoutResponseModel logoutInvalidToken(LogoutBodyModel logoutBody) {
+        return given(baseRequestSpec)
+                .body(logoutBody)
+                .when()
+                .post("/auth/logout/")
+                .then()
+                .spec(invalidRefreshToken)
+                .extract()
+                .as(InvalidTokenLogoutResponseModel.class);
+    }
+
+    @Step("[API] Попытка logout с пустым токеном")
+    public EmptyTokenLogoutResponseModel logoutEmptyToken(LogoutBodyModel logoutBody) {
+        return given(baseRequestSpec)
+                .body(logoutBody)
+                .when()
+                .post("/auth/logout/")
+                .then()
+                .spec(emptyRefreshToken)
+                .extract()
+                .as(EmptyTokenLogoutResponseModel.class);
+    }
+
+    @Step("[API] Попытка logout с уже использованным токеном")
+    public InvalidTokenLogoutResponseModel logoutBlacklistedToken(LogoutBodyModel logoutBody) {
+        return given(baseRequestSpec)
+                .body(logoutBody)
+                .when()
+                .post("/auth/logout/")
+                .then()
+                .spec(blackListRefreshToken)
+                .extract()
+                .as(InvalidTokenLogoutResponseModel.class);
     }
 }
