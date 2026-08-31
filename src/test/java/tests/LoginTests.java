@@ -33,19 +33,19 @@ public class LoginTests extends TestBase {
 
         LoginBodyModel loginData = new LoginBodyModel(username, password);
 
-        SuccessfulLoginResponseModel loginResponse = step("Отправка запроса на авторизацию",() ->
+        SuccessfulLoginResponseModel loginResponse = step("Отправка запроса на авторизацию", () ->
                 given(baseRequestSpec)
-                .body(loginData)
-                .when()
-                .post("/auth/token/")
-                .then()
-                .spec(successfullLoginResponseSpec)
-                .extract().as(SuccessfulLoginResponseModel.class)
+                        .body(loginData)
+                        .when()
+                        .post("/auth/token/")
+                        .then()
+                        .spec(successfullLoginResponseSpec)
+                        .extract().as(SuccessfulLoginResponseModel.class)
         );
 
         step("Проверка полученных токенов", () -> {
-        String actualAccess = loginResponse.access();
-        String actualRefresh = loginResponse.refresh();
+            String actualAccess = loginResponse.access();
+            String actualRefresh = loginResponse.refresh();
 
             assertThat(actualAccess)
                     .as("Access токен должен начинаться с ожидаемого префикса")
@@ -74,17 +74,17 @@ public class LoginTests extends TestBase {
 
         WrongCredentialsLoginResponseModel loginResponse = step(
                 "Отправка запроса на авторизацию с не валидным паролем", () ->
-                given(baseRequestSpec)
-                .body(loginData)
-                .when()
-                .post("/auth/token/")
-                .then()
-                .spec(wrongCredentialsLoginResponseSpec)
-                .extract().as(WrongCredentialsLoginResponseModel.class)
+                        given(baseRequestSpec)
+                                .body(loginData)
+                                .when()
+                                .post("/auth/token/")
+                                .then()
+                                .spec(wrongCredentialsLoginResponseSpec)
+                                .extract().as(WrongCredentialsLoginResponseModel.class)
         );
 
         step("Проверка сообщения об ошибке при попытке входа с невалидным паролем", () -> {
-        String actualDetailError = loginResponse.detail();
+            String actualDetailError = loginResponse.detail();
             assertThat(actualDetailError)
                     .as("Сообщение об ошибке должно соответствовать ожидаемому")
                     .isEqualTo(expectedDetailError);
@@ -103,13 +103,13 @@ public class LoginTests extends TestBase {
 
         WrongCredentialsLoginResponseModel loginResponse = step(
                 "Отправка запроса на авторизацию с невалидным username", () ->
-                given(baseRequestSpec)
-                .body(loginData)
-                .when()
-                .post("/auth/token/")
-                .then()
-                .spec(wrongCredentialsLoginResponseSpec)
-                .extract().as(WrongCredentialsLoginResponseModel.class)
+                        given(baseRequestSpec)
+                                .body(loginData)
+                                .when()
+                                .post("/auth/token/")
+                                .then()
+                                .spec(wrongCredentialsLoginResponseSpec)
+                                .extract().as(WrongCredentialsLoginResponseModel.class)
         );
 
         step("Проверка сообщения об ошибке при попытке входа с невалидным username", () -> {
@@ -132,13 +132,13 @@ public class LoginTests extends TestBase {
 
         ExistingUserLoginResponseModel loginResponse = step(
                 "Отправка запроса на авторизацию с пустым username", () ->
-                given(baseRequestSpec)
-                .body(loginData)
-                .when()
-                .post("/auth/token/")
-                .then()
-                .spec(existingUserLoginResponseSpec)
-                .extract().as(ExistingUserLoginResponseModel.class)
+                        given(baseRequestSpec)
+                                .body(loginData)
+                                .when()
+                                .post("/auth/token/")
+                                .then()
+                                .spec(existingUserLoginResponseSpec)
+                                .extract().as(ExistingUserLoginResponseModel.class)
         );
 
         step("Проверка сообщения об ошибке при попытке входа без username", () -> {
@@ -161,20 +161,20 @@ public class LoginTests extends TestBase {
 
         ExistingPasswordLoginResponseModel loginResponse = step(
                 "Отправка запроса на авторизацию с пустым паролем", () ->
-                given(baseRequestSpec)
-                .body(loginData)
-                .when()
-                .post("/auth/token/")
-                .then()
-                .spec(existingPasswordLoginResponseSpec)
-                .extract().as(ExistingPasswordLoginResponseModel.class)
+                        given(baseRequestSpec)
+                                .body(loginData)
+                                .when()
+                                .post("/auth/token/")
+                                .then()
+                                .spec(existingPasswordLoginResponseSpec)
+                                .extract().as(ExistingPasswordLoginResponseModel.class)
         );
 
-            step("Проверка сообщения об ошибке при попытке входа с непереданным паролем", () -> {
-                String actualError = loginResponse.password().getFirst();
-                assertThat(actualError)
-                        .as("Сообщение об ошибке должно соответствовать ожидаемому")
-                        .isEqualTo(expectedErrorPass);
-            });
+        step("Проверка сообщения об ошибке при попытке входа с непереданным паролем", () -> {
+            String actualError = loginResponse.password().getFirst();
+            assertThat(actualError)
+                    .as("Сообщение об ошибке должно соответствовать ожидаемому")
+                    .isEqualTo(expectedErrorPass);
+        });
     }
 }
