@@ -1,5 +1,8 @@
 package tests;
 
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Owner;
 import models.registration.*;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.*;
@@ -12,6 +15,9 @@ import static specs.registration.RegistrationSpec.*;
 import static tests.TestData.expectedError;
 import static tests.TestData.expectedErrorPass;
 
+@Owner("Elena Yatsenko")
+@Epic("Управление пользователями")
+@Feature("Регистрация")
 public class RegistrationTests extends TestBase {
 
     String username;
