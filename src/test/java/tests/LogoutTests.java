@@ -46,9 +46,7 @@ public class LogoutTests extends TestBase {
                         .post("/auth/token/")
                         .then()
                         .spec(successfullLoginResponseSpec)
-                        .extract().path("refresh")
-        );
-
+                        .extract().path("refresh"));
 
         LogoutBodyModel logoutData = new LogoutBodyModel(refreshToken);
         SuccessfulLogoutResponseModel logoutResponse = step("Отправка запроса на выход из системы", () ->
