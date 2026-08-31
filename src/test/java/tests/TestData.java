@@ -23,7 +23,7 @@ public class TestData {
     public static final String invalidTelegramLink = "invalid-url";
     public static final String notFoundError = "No Club matches the given query.";
     public static final String unauthorizedError = "Authentication credentials were not provided.";
-    public static final String fieldRequiredError = "This field may not be blank.";    public static final String negativeYearError = "This field must be positive.";
+    public static final String negativeYearError = "This field must be positive.";
     public static final int nonExistentClubId = 999999;
 
     private static final Faker faker = new Faker();
