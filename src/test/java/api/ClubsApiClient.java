@@ -5,7 +5,6 @@ import io.restassured.response.Response;
 import io.restassured.specification.ResponseSpecification;
 import models.clubs.ClubBodyModel;
 import models.clubs.ClubModel;
-import models.clubs.ClubPatchBodyModel;
 import models.clubs.ClubsListResponseModel;
 import specs.clubs.ClubsSpec;
 
@@ -18,18 +17,6 @@ public class ClubsApiClient {
     @Step("[API] Получение списка клубов")
     public ClubsListResponseModel getClubs() {
         return given(clubsRequestSpec)
-                .when()
-                .get("/clubs/")
-                .then()
-                .spec(ClubsSpec.clubsResponse200Spec)
-                .extract()
-                .as(ClubsListResponseModel.class);
-    }
-
-    @Step("[API] Получение списка клубов с фильтрацией")
-    public ClubsListResponseModel getClubsWithFilter(String filter, String value) {
-        return given(clubsRequestSpec)
-                .queryParam(filter, value)
                 .when()
                 .get("/clubs/")
                 .then()
@@ -136,7 +123,7 @@ public class ClubsApiClient {
     }
 
     @Step("[API] Частичное обновление клуба")
-    public ClubModel patchClub(String accessToken, Integer clubId, ClubPatchBodyModel body) {
+    public ClubModel patchClub(String accessToken, Integer clubId, models.clubs.ClubPatchUpdateDescriptionBodyModel body) {
         return given(clubsRequestSpec)
                 .auth().oauth2(accessToken)
                 .pathParam("id", clubId)
@@ -150,7 +137,7 @@ public class ClubsApiClient {
     }
 
     @Step("[API] Частичное обновление клуба с кастомной спецификацией")
-    public Response patchClubWithSpec(String accessToken, Integer clubId, ClubPatchBodyModel body, ResponseSpecification spec) {
+    public Response patchClubWithSpec(String accessToken, Integer clubId, models.clubs.ClubPatchUpdateDescriptionBodyModel body, ResponseSpecification spec) {
         var request = given(clubsRequestSpec);
         if (accessToken != null && !accessToken.isEmpty()) {
             request.auth().oauth2(accessToken);

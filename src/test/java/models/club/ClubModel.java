@@ -1,5 +1,7 @@
 package models.clubs;
 
+import models.club.ClubReviewModel;
+
 import java.time.OffsetDateTime;
 import java.util.List;
 
@@ -12,7 +14,7 @@ public record ClubModel(
         String telegramChatLink,
         Integer owner,
         List<Integer> members,
-        List<Object> reviews,
+        List<ClubReviewModel> reviews,
         String created,
         String modified
 ) {}

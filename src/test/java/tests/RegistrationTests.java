@@ -19,7 +19,6 @@ public class RegistrationTests extends TestBase {
 
     @BeforeEach
     public void prepareTestData() {
-
         username = "user_" + System.currentTimeMillis();
         password = "pass_" + System.currentTimeMillis();
     }

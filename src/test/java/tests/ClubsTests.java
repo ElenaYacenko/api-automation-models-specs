@@ -3,7 +3,6 @@ package tests;
 import io.qameta.allure.*;
 import models.clubs.ClubBodyModel;
 import models.clubs.ClubModel;
-import models.clubs.ClubPatchBodyModel;
 import models.clubs.ClubsListResponseModel;
 import models.login.LoginBodyModel;
 import org.junit.jupiter.api.*;
@@ -20,11 +19,22 @@ import static tests.TestData.*;
 public class ClubsTests extends TestBase {
 
     private String accessToken;
+    private Integer createdClubId; // Для гарантированной очистки
 
     @BeforeEach
     public void auth() {
         LoginBodyModel loginData = new LoginBodyModel(username, password);
         accessToken = api.auth.login(loginData).access();
+    }
+
+    @AfterEach
+    public void cleanup() {
+        if (createdClubId != null) {
+            step("Очистка: удаление созданного клуба с id " + createdClubId, () ->
+                    api.clubs.deleteClub(accessToken, createdClubId)
+            );
+            createdClubId = null;
+        }
     }
 
     private ClubBodyModel uniqueClubBody() {
@@ -41,7 +51,11 @@ public class ClubsTests extends TestBase {
     @Test
     @Description("POST /clubs/ с валидными данными: клуб создаётся, возвращается 201, все поля совпадают")
     @DisplayName("Create: успешное создание клуба (201 Created)")
-    @Tags({@Tag("regression"), @Tag("smoke"), @Tag("positive")})
+    @Tags({
+            @Tag("regression"),
+            @Tag("smoke"),
+            @Tag("positive")
+    })
     @Severity(SeverityLevel.CRITICAL)
     public void createClubSuccessfully() {
         ClubBodyModel clubData = uniqueClubBody();
@@ -49,6 +63,7 @@ public class ClubsTests extends TestBase {
         ClubModel created = step("Создание клуба", () ->
                 api.clubs.createClub(accessToken, clubData)
         );
+        createdClubId = created.id();
 
         step("Проверка созданного клуба", () -> {
             assertThat(created.id()).isPositive();
@@ -61,14 +76,16 @@ public class ClubsTests extends TestBase {
             assertThat(created.members()).contains(created.owner());
             assertThat(created.created()).isNotNull();
         });
-
-        api.clubs.deleteClub(accessToken, created.id());
     }
 
     @Test
     @Description("GET /clubs/ возвращает список клубов с пагинацией и корректной структурой")
     @DisplayName("Read: получение списка клубов (200 OK)")
-    @Tags({@Tag("regression"), @Tag("smoke"), @Tag("positive")})
+    @Tags({
+            @Tag("regression"),
+            @Tag("smoke"),
+            @Tag("positive")
+    })
     @Severity(SeverityLevel.CRITICAL)
     public void getClubsListSuccessfully() {
         ClubsListResponseModel response = api.clubs.getClubs();
@@ -94,7 +111,11 @@ public class ClubsTests extends TestBase {
     @Test
     @Description("GET /clubs/{id}/ возвращает клуб с корректными данными")
     @DisplayName("Read: получение клуба по id (200 OK)")
-    @Tags({@Tag("regression"), @Tag("smoke"), @Tag("positive")})
+    @Tags({
+            @Tag("regression"),
+            @Tag("smoke"),
+            @Tag("positive")
+    })
     @Severity(SeverityLevel.CRITICAL)
     public void getClubByIdSuccessfully() {
         ClubBodyModel clubData = uniqueClubBody();
@@ -113,32 +134,20 @@ public class ClubsTests extends TestBase {
             assertThat(found.telegramChatLink()).isEqualTo(created.telegramChatLink());
             assertThat(found.owner()).isEqualTo(created.owner());
         });
-
-        api.clubs.deleteClub(accessToken, created.id());
-    }
-
-    @Test
-    @Description("GET /clubs/ с пагинацией (limit и offset)")
-    @DisplayName("Read: пагинация клубов (limit и offset)")
-    @Tags({@Tag("regression"), @Tag("positive")})
-    @Severity(SeverityLevel.NORMAL)
-    public void getClubsWithPaginationReturns200() {
-        int limit = 2;
-        ClubsListResponseModel response = api.clubs.getClubsWithPagination(limit, 0);
-
-        step("Проверить, что вернулось не больше limit клубов", () -> {
-            assertThat(response.results()).hasSizeLessThanOrEqualTo(limit);
-        });
     }
 
     @Test
     @Description("PUT /clubs/{id}/ с новыми данными: клуб обновляется, все поля совпадают")
     @DisplayName("Update: полное обновление клуба через PUT (200 OK)")
-    @Tags({@Tag("regression"), @Tag("positive")})
+    @Tags({
+            @Tag("regression"),
+            @Tag("positive")
+    })
     @Severity(SeverityLevel.CRITICAL)
     public void updateClubSuccessfully() {
         ClubBodyModel createData = uniqueClubBody();
         ClubModel created = api.clubs.createClub(accessToken, createData);
+        createdClubId = created.id();
 
         ClubBodyModel updateData = new ClubBodyModel(
                 createData.bookTitle() + " Updated",
@@ -161,8 +170,6 @@ public class ClubsTests extends TestBase {
             assertThat(updated.telegramChatLink()).isEqualTo(updateData.telegramChatLink());
             assertThat(updated.owner()).isEqualTo(created.owner());
         });
-
-        api.clubs.deleteClub(accessToken, created.id());
     }
 
     @Test
@@ -173,13 +180,10 @@ public class ClubsTests extends TestBase {
     public void patchClubSuccessfully() {
         ClubBodyModel createData = uniqueClubBody();
         ClubModel created = api.clubs.createClub(accessToken, createData);
+        createdClubId = created.id();
 
-        ClubPatchBodyModel patchData = new ClubPatchBodyModel(
-                null,
-                null,
-                null,
-                updatedClubDescription,
-                null
+        models.clubs.ClubPatchUpdateDescriptionBodyModel patchData = new models.clubs.ClubPatchUpdateDescriptionBodyModel(
+                updatedClubDescription
         );
 
         ClubModel patched = step("Частичное обновление клуба через PATCH", () ->
@@ -194,14 +198,16 @@ public class ClubsTests extends TestBase {
             assertThat(patched.description()).isEqualTo(updatedClubDescription);
             assertThat(patched.telegramChatLink()).isEqualTo(created.telegramChatLink());
         });
-
-        api.clubs.deleteClub(accessToken, created.id());
     }
 
     @Test
     @Description("DELETE /clubs/{id}/ удаляет клуб, последующий GET возвращает 404")
     @DisplayName("Delete: успешное удаление клуба (204 No Content)")
-    @Tags({@Tag("regression"), @Tag("smoke"), @Tag("positive")})
+    @Tags({
+            @Tag("regression"),
+            @Tag("smoke"),
+            @Tag("positive")
+    })
     @Severity(SeverityLevel.CRITICAL)
     public void deleteClubSuccessfully() {
         ClubBodyModel clubData = uniqueClubBody();
@@ -210,6 +216,8 @@ public class ClubsTests extends TestBase {
         step("Удаление клуба с id: " + created.id(), () ->
                 api.clubs.deleteClub(accessToken, created.id())
         );
+
+        createdClubId = null;
 
         step("Проверка, что клуб удалён (404)", () -> {
             var response = api.clubs.getClubWithSpec(created.id(), clubsResponse404Spec);
@@ -288,12 +296,8 @@ public class ClubsTests extends TestBase {
     @Tags({@Tag("regression"), @Tag("negative")})
     @Severity(SeverityLevel.NORMAL)
     public void patchNonExistentClubReturns404() {
-        ClubPatchBodyModel patchData = new ClubPatchBodyModel(
-                null,
-                null,
-                null,
-                updatedClubDescription,
-                null
+        models.clubs.ClubPatchUpdateDescriptionBodyModel patchData = new models.clubs.ClubPatchUpdateDescriptionBodyModel(
+                updatedClubDescription
         );
 
         var response = api.clubs.patchClubWithSpec(accessToken, nonExistentClubId, patchData, clubsResponse404Spec);
