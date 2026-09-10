@@ -1,5 +1,6 @@
 package specs.clubs;
 
+import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
@@ -13,6 +14,7 @@ import static org.hamcrest.Matchers.notNullValue;
 public class ClubsSpec {
 
     public static RequestSpecification clubsRequestSpec = with()
+            .filter(new AllureRestAssured())
             .log().all()
             .basePath("/api/v1")
             .contentType(JSON);
