@@ -17,6 +17,6 @@
     "assessment": { "type": "integer", "minimum": 1, "maximum": 5 },
     "readPages": { "type": "integer", "minimum": 0 },
     "created": { "type": "string" },
-    "modified": { "type": "string" }
+    "modified": { "type": ["string", "null"] }
   }
 }

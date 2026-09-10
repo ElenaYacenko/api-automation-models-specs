@@ -3,10 +3,7 @@ package api;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import io.restassured.specification.ResponseSpecification;
-import models.reviews.ReviewBodyModel;
-import models.reviews.ReviewPatchBodyModel;
-import models.reviews.ReviewUserModel;
-import models.reviews.ReviewsListResponseModel;
+import models.reviews.*;
 
 import static io.restassured.RestAssured.given;
 import static specs.BaseSpec.baseRequestSpec;
@@ -29,7 +26,7 @@ public class ReviewsApiClient {
     }
 
     @Step("[API] Получение отзыва по id")
-    public ReviewUserModel getReview(Integer reviewId) {
+    public ReviewResponseModel getReview(Integer reviewId) {
         return given(baseRequestSpec)
                 .pathParam("id", reviewId)
                 .when()
@@ -37,11 +34,11 @@ public class ReviewsApiClient {
                 .then()
                 .spec(reviewsResponse200Spec)
                 .extract()
-                .as(ReviewUserModel.class);
+                .as(ReviewResponseModel.class);
     }
 
     @Step("[API] Создание отзыва")
-    public ReviewUserModel createReview(String accessToken, ReviewBodyModel body) {
+    public ReviewResponseModel createReview(String accessToken, ReviewBodyModel body) {
         return given(baseRequestSpec)
                 .auth().oauth2(accessToken)
                 .body(body)
@@ -50,11 +47,11 @@ public class ReviewsApiClient {
                 .then()
                 .spec(reviewsResponse201Spec)
                 .extract()
-                .as(ReviewUserModel.class);
+                .as(ReviewResponseModel.class);
     }
 
     @Step("[API] Полное обновление отзыва (PUT)")
-    public ReviewUserModel updateReviewPut(String accessToken, Integer reviewId, ReviewBodyModel body) {
+    public ReviewResponseModel updateReviewPut(String accessToken, Integer reviewId, ReviewBodyModel body) {
         return given(baseRequestSpec)
                 .auth().oauth2(accessToken)
                 .pathParam("id", reviewId)
@@ -64,11 +61,11 @@ public class ReviewsApiClient {
                 .then()
                 .spec(reviewsResponse200Spec)
                 .extract()
-                .as(ReviewUserModel.class);
+                .as(ReviewResponseModel.class);
     }
 
     @Step("[API] Частичное обновление отзыва (PATCH)")
-    public ReviewUserModel updateReviewPatch(String accessToken, Integer reviewId, ReviewPatchBodyModel body) {
+    public ReviewResponseModel updateReviewPatch(String accessToken, Integer reviewId, ReviewPatchBodyModel body) {
         return given(baseRequestSpec)
                 .auth().oauth2(accessToken)
                 .pathParam("id", reviewId)
@@ -78,7 +75,7 @@ public class ReviewsApiClient {
                 .then()
                 .spec(reviewsResponse200Spec)
                 .extract()
-                .as(ReviewUserModel.class);
+                .as(ReviewResponseModel.class);
     }
 
     @Step("[API] Удаление отзыва")
@@ -92,15 +89,23 @@ public class ReviewsApiClient {
                 .spec(reviewsResponse204Spec);
     }
 
-    // ===== Методы с кастомной спецификацией (для негативных тестов) =====
+    @Step("[API] Получение отзыва по id с кастомной спецификацией")
+    public Response getReviewWithSpec(String accessToken, Integer reviewId, ResponseSpecification spec) {
+        return given(baseRequestSpec)
+                .auth().oauth2(accessToken)
+                .pathParam("id", reviewId)
+                .when()
+                .get("/clubs/reviews/{id}/")
+                .then()
+                .spec(spec)
+                .extract()
+                .response();
+    }
 
-    @Step("[API] Создание отзыва с кастомной спецификацией")
-    public Response createReviewWithSpec(String accessToken, ReviewBodyModel body, ResponseSpecification spec) {
-        var request = given(baseRequestSpec);
-        if (accessToken != null && !accessToken.isEmpty()) {
-            request.auth().oauth2(accessToken);
-        }
-        return request
+    @Step("[API] Создание отзыва  с кастомной спецификацией")
+    public Response createReviewWithSpec(String accessToken, Object body, ResponseSpecification spec) {
+        return given(baseRequestSpec)
+                .auth().oauth2(accessToken)
                 .body(body)
                 .when()
                 .post("/clubs/reviews/")
@@ -110,13 +115,13 @@ public class ReviewsApiClient {
                 .response();
     }
 
-    @Step("[API] Обновление отзыва (PUT) с кастомной спецификацией")
-    public Response updateReviewPutWithSpec(String accessToken, Integer reviewId, ReviewBodyModel body, ResponseSpecification spec) {
-        var request = given(baseRequestSpec);
-        if (accessToken != null && !accessToken.isEmpty()) {
-            request.auth().oauth2(accessToken);
-        }
-        return request
+    @Step("[API] Полное обновление отзыва (PUT) с кастомной спецификацией")
+    public Response updateReviewPutWithSpec(String accessToken,
+                                            Integer reviewId,
+                                            ReviewBodyModel body,
+                                            ResponseSpecification spec) {
+        return given(baseRequestSpec)
+                .auth().oauth2(accessToken)
                 .pathParam("id", reviewId)
                 .body(body)
                 .when()
@@ -127,30 +132,11 @@ public class ReviewsApiClient {
                 .response();
     }
 
-    @Step("[API] Обновление отзыва (PATCH) с кастомной спецификацией")
-    public Response updateReviewPatchWithSpec(String accessToken, Integer reviewId, ReviewPatchBodyModel body, ResponseSpecification spec) {
-        var request = given(baseRequestSpec);
-        if (accessToken != null && !accessToken.isEmpty()) {
-            request.auth().oauth2(accessToken);
-        }
-        return request
-                .pathParam("id", reviewId)
-                .body(body)
-                .when()
-                .patch("/clubs/reviews/{id}/")
-                .then()
-                .spec(spec)
-                .extract()
-                .response();
-    }
-
     @Step("[API] Удаление отзыва с кастомной спецификацией")
-    public Response deleteReviewWithSpec(String accessToken, Integer reviewId, ResponseSpecification spec) {
-        var request = given(baseRequestSpec);
-        if (accessToken != null && !accessToken.isEmpty()) {
-            request.auth().oauth2(accessToken);
-        }
-        return request
+    public Response deleteReviewWithSpec(String accessToken, Integer reviewId,
+                                         ResponseSpecification spec) {
+        return given(baseRequestSpec)
+                .auth().oauth2(accessToken)
                 .pathParam("id", reviewId)
                 .when()
                 .delete("/clubs/reviews/{id}/")

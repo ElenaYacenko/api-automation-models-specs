@@ -8,6 +8,7 @@ public class TestData {
 
     public static final String username = "Kiersten";
     public static final String password = "Sang";
+    public static final String passwordDef = "123456";
     public static final String wrongPassword = "Tempie1";
     public static final String wrongUsername = "Holly1";
     public static final String expectedTokenPath = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9";
@@ -33,4 +34,8 @@ public class TestData {
     public static final String newFirstName = fakerRu.name().lastName();
     public static final String newLastName = fakerRu.name().lastName();
     public static final String newEmail = faker.internet().emailAddress();
+
+    public static final String errorBookReview = "No BookReview matches the given query.";
+    public static final String errorAssessment = "This field is required.";
+    public static final String errorPermission = "You do not have permission to perform this action.";
 }
