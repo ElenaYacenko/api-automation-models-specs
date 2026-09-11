@@ -6,7 +6,6 @@ import models.clubs.ClubBodyModel;
 import models.clubs.ClubModel;
 import models.login.LoginBodyModel;
 import models.registration.RegistrationBodyModel;
-import models.registration.SuccessfulRegistrationResponseModel;
 import models.reviews.*;
 import org.junit.jupiter.api.*;
 
@@ -25,22 +24,15 @@ public class ReviewTests extends TestBase {
 
     @BeforeEach
     public void prepareTestData() {
-        nameUser = faker.name().lastName();
+        nameUser = faker.name().lastName() + "_" + System.currentTimeMillis();
         RegistrationBodyModel registrationData = new RegistrationBodyModel(nameUser, passwordDef);
-        SuccessfulRegistrationResponseModel registrationResponse = step(
-                "Регистрация пользователя: " + username,
-                () -> api.users.register(registrationData)
-        );
+        api.users.register(registrationData);
 
         LoginBodyModel loginData = new LoginBodyModel(nameUser, passwordDef);
-        accessToken = step("Логин под новым пользователем",
-                () -> api.auth.login(loginData).access()
-        );
+        accessToken = api.auth.login(loginData).access();
 
         ClubBodyModel clubData = uniqueClubBody();
-        ClubModel createdClub = step("Создание клуба",
-                () -> api.clubs.createClub(accessToken, clubData)
-        );
+        ClubModel createdClub = api.clubs.createClub(accessToken, clubData);
         createdClubId = createdClub.id();
     }
 
@@ -55,13 +47,12 @@ public class ReviewTests extends TestBase {
     }
 
     private ClubBodyModel uniqueClubBody() {
-        String suffix = String.valueOf(System.currentTimeMillis());
         return new ClubBodyModel(
-                "QA Guru, my club " + suffix,
-                "Elena Yatsenko",
-                2026,
-                "Test description " + suffix,
-                "https://t.me/qa_guru_" + suffix
+                "QA Guru, " + faker.book().title(),
+                faker.book().author(),
+                faker.number().numberBetween(2000, 2026),
+                faker.lorem().sentence(),
+                "https://t.me/" + faker.internet().uuid()
         );
     }
 
