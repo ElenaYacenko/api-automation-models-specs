@@ -1,7 +1,6 @@
 package tests;
 
 import io.qameta.allure.*;
-import models.clubs.ClubBodyModel;
 import models.clubs.ClubModel;
 import models.clubs.ClubsListResponseModel;
 import models.login.LoginBodyModel;
@@ -23,6 +22,7 @@ public class ClubsTests extends TestBase {
 
     @BeforeEach
     public void auth() {
+        String username = faker.name().lastName() + "_" + System.currentTimeMillis();
         LoginBodyModel loginData = new LoginBodyModel(username, password);
         accessToken = api.auth.login(loginData).access();
     }
@@ -37,9 +37,9 @@ public class ClubsTests extends TestBase {
         }
     }
 
-    private ClubBodyModel uniqueClubBody() {
+    private models.clubs.CreateClubBodyModel uniqueClubBody() {
         String suffix = String.valueOf(System.currentTimeMillis());
-        return new ClubBodyModel(
+        return new models.clubs.CreateClubBodyModel(
                 "QA Guru Club " + suffix,
                 "Stanislav Vasenkov",
                 2026,
@@ -58,7 +58,7 @@ public class ClubsTests extends TestBase {
     })
     @Severity(SeverityLevel.CRITICAL)
     public void createClubSuccessfully() {
-        ClubBodyModel clubData = uniqueClubBody();
+        models.clubs.CreateClubBodyModel clubData = uniqueClubBody();
 
         ClubModel created = step("Создание клуба", () ->
                 api.clubs.createClub(accessToken, clubData)
@@ -118,7 +118,7 @@ public class ClubsTests extends TestBase {
     })
     @Severity(SeverityLevel.CRITICAL)
     public void getClubByIdSuccessfully() {
-        ClubBodyModel clubData = uniqueClubBody();
+        models.clubs.CreateClubBodyModel clubData = uniqueClubBody();
         ClubModel created = api.clubs.createClub(accessToken, clubData);
 
         ClubModel found = step("Получение клуба по id: " + created.id(), () ->
@@ -145,11 +145,11 @@ public class ClubsTests extends TestBase {
     })
     @Severity(SeverityLevel.CRITICAL)
     public void updateClubSuccessfully() {
-        ClubBodyModel createData = uniqueClubBody();
+        models.clubs.CreateClubBodyModel createData = uniqueClubBody();
         ClubModel created = api.clubs.createClub(accessToken, createData);
         createdClubId = created.id();
 
-        ClubBodyModel updateData = new ClubBodyModel(
+        models.clubs.CreateClubBodyModel updateData = new models.clubs.CreateClubBodyModel(
                 createData.bookTitle() + " Updated",
                 "Updated Author",
                 2025,
@@ -178,7 +178,7 @@ public class ClubsTests extends TestBase {
     @Tags({@Tag("regression"), @Tag("positive")})
     @Severity(SeverityLevel.NORMAL)
     public void patchClubSuccessfully() {
-        ClubBodyModel createData = uniqueClubBody();
+        models.clubs.CreateClubBodyModel createData = uniqueClubBody();
         ClubModel created = api.clubs.createClub(accessToken, createData);
         createdClubId = created.id();
 
@@ -210,7 +210,7 @@ public class ClubsTests extends TestBase {
     })
     @Severity(SeverityLevel.CRITICAL)
     public void deleteClubSuccessfully() {
-        ClubBodyModel clubData = uniqueClubBody();
+        models.clubs.CreateClubBodyModel clubData = uniqueClubBody();
         ClubModel created = api.clubs.createClub(accessToken, clubData);
 
         step("Удаление клуба с id: " + created.id(), () ->
@@ -244,7 +244,7 @@ public class ClubsTests extends TestBase {
     @Tags({@Tag("regression"), @Tag("negative")})
     @Severity(SeverityLevel.NORMAL)
     public void createClubWithoutTokenReturns401() {
-        ClubBodyModel clubData = uniqueClubBody();
+        models.clubs.CreateClubBodyModel clubData = uniqueClubBody();
 
         var response = api.clubs.createClubWithSpec(emptyString, clubData, clubsResponse401Spec);
 
@@ -259,8 +259,8 @@ public class ClubsTests extends TestBase {
     @Tags({@Tag("regression"), @Tag("negative")})
     @Severity(SeverityLevel.NORMAL)
     public void createClubWithEmptyTitleReturns400() {
-        ClubBodyModel valid = uniqueClubBody();
-        ClubBodyModel clubData = new ClubBodyModel(
+        models.clubs.CreateClubBodyModel valid = uniqueClubBody();
+        models.clubs.CreateClubBodyModel clubData = new models.clubs.CreateClubBodyModel(
                 emptyString,
                 valid.bookAuthors(),
                 valid.publicationYear(),
@@ -281,7 +281,7 @@ public class ClubsTests extends TestBase {
     @Tags({@Tag("regression"), @Tag("negative")})
     @Severity(SeverityLevel.NORMAL)
     public void updateNonExistentClubReturns404() {
-        ClubBodyModel updateData = uniqueClubBody();
+        models.clubs.CreateClubBodyModel updateData = uniqueClubBody();
 
         var response = api.clubs.updateClubWithSpec(accessToken, nonExistentClubId, updateData, clubsResponse404Spec);
 

@@ -1,6 +1,6 @@
 package models.clubs;
 
-public record ClubBodyModel(
+public record CreateClubBodyModel(
         String bookTitle,
         String bookAuthors,
         Integer publicationYear,

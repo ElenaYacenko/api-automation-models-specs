@@ -2,7 +2,6 @@ package tests;
 
 import io.qameta.allure.*;
 import io.restassured.response.Response;
-import models.clubs.ClubBodyModel;
 import models.clubs.ClubModel;
 import models.login.LoginBodyModel;
 import models.registration.RegistrationBodyModel;
@@ -31,7 +30,7 @@ public class ReviewTests extends TestBase {
         LoginBodyModel loginData = new LoginBodyModel(nameUser, passwordDef);
         accessToken = api.auth.login(loginData).access();
 
-        ClubBodyModel clubData = uniqueClubBody();
+        models.clubs.CreateClubBodyModel clubData = uniqueClubBody();
         ClubModel createdClub = api.clubs.createClub(accessToken, clubData);
         createdClubId = createdClub.id();
     }
@@ -46,8 +45,8 @@ public class ReviewTests extends TestBase {
         }
     }
 
-    private ClubBodyModel uniqueClubBody() {
-        return new ClubBodyModel(
+    private models.clubs.CreateClubBodyModel uniqueClubBody() {
+        return new models.clubs.CreateClubBodyModel(
                 "QA Guru, " + faker.book().title(),
                 faker.book().author(),
                 faker.number().numberBetween(2000, 2026),

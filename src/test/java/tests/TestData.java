@@ -35,6 +35,12 @@ public class TestData {
     public static final String newLastName = fakerRu.name().lastName() + "_" + System.currentTimeMillis();
     public static final String newEmail = faker.internet().emailAddress();
 
+    public static final String nameBookClub = "QA Guru, " + faker.book().title() + "_" + System.currentTimeMillis();
+    public static final String nameAuthorClub = faker.book().author();
+    public static final int yearBookClub =faker.number().numberBetween(2000, 2026);
+    public static final String bookDescription =faker.lorem().sentence();
+    public static final String telegram ="https://t.me/" + faker.internet().uuid();
+
     public static final String errorBookReview = "No BookReview matches the given query.";
     public static final String errorAssessment = "This field is required.";
     public static final String errorPermission = "You do not have permission to perform this action.";

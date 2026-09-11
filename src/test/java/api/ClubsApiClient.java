@@ -3,9 +3,10 @@ package api;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import io.restassured.specification.ResponseSpecification;
-import models.clubs.ClubBodyModel;
+import models.clubs.CreateClubBodyModel;
 import models.clubs.ClubModel;
 import models.clubs.ClubsListResponseModel;
+import net.datafaker.Faker;
 import specs.clubs.ClubsSpec;
 
 import static io.restassured.RestAssured.given;
@@ -50,6 +51,18 @@ public class ClubsApiClient {
                 .as(ClubModel.class);
     }
 
+    @Step("[API] Поиск клубов по названию: {query}")
+    public ClubsListResponseModel searchClubs(String query) {
+        return given(clubsRequestSpec)
+                .queryParam("search", query)
+                .when()
+                .get("/clubs/")
+                .then()
+                .spec(ClubsSpec.clubsResponse200Spec)
+                .extract()
+                .as(ClubsListResponseModel.class);
+    }
+
     @Step("[API] Получение клуба по id с кастомной спецификацией")
     public Response getClubWithSpec(Integer clubId, ResponseSpecification spec) {
         return given(clubsRequestSpec)
@@ -63,7 +76,7 @@ public class ClubsApiClient {
     }
 
     @Step("[API] Создание клуба")
-    public ClubModel createClub(String accessToken, ClubBodyModel body) {
+    public ClubModel createClub(String accessToken, models.clubs.CreateClubBodyModel body) {
         return given(clubsRequestSpec)
                 .auth().oauth2(accessToken)
                 .body(body)
@@ -76,7 +89,7 @@ public class ClubsApiClient {
     }
 
     @Step("[API] Создание клуба с кастомной спецификацией")
-    public Response createClubWithSpec(String accessToken, ClubBodyModel body, ResponseSpecification spec) {
+    public Response createClubWithSpec(String accessToken, models.clubs.CreateClubBodyModel body, ResponseSpecification spec) {
         var request = given(clubsRequestSpec);
         if (accessToken != null && !accessToken.isEmpty()) {
             request.auth().oauth2(accessToken);
@@ -91,8 +104,28 @@ public class ClubsApiClient {
                 .response();
     }
 
+    @Step("[API] Создание рандомного клуба POST /clubs/")
+    public ClubModel createRandomClub(String accessToken) {
+        Faker faker = new Faker();
+        String bookTitle = faker.book().title();
+        String bookAuthors = faker.book().author();
+        Integer publicationYear = 2009;
+        String description = faker.lorem().sentence();
+        String telegramChatLink = "https://t.me/qa_guru";
+
+        CreateClubBodyModel createClubBody = new CreateClubBodyModel(
+                bookTitle,
+                bookAuthors,
+                publicationYear,
+                description,
+                telegramChatLink
+        );
+
+        return createClub(accessToken, createClubBody);
+    }
+
     @Step("[API] Полное обновление клуба")
-    public ClubModel updateClub(String accessToken, Integer clubId, ClubBodyModel body) {
+    public ClubModel updateClub(String accessToken, Integer clubId, models.clubs.CreateClubBodyModel body) {
         return given(clubsRequestSpec)
                 .auth().oauth2(accessToken)
                 .pathParam("id", clubId)
@@ -106,7 +139,7 @@ public class ClubsApiClient {
     }
 
     @Step("[API] Полное обновление клуба с кастомной спецификацией")
-    public Response updateClubWithSpec(String accessToken, Integer clubId, ClubBodyModel body, ResponseSpecification spec) {
+    public Response updateClubWithSpec(String accessToken, Integer clubId, models.clubs.CreateClubBodyModel body, ResponseSpecification spec) {
         var request = given(clubsRequestSpec);
         if (accessToken != null && !accessToken.isEmpty()) {
             request.auth().oauth2(accessToken);

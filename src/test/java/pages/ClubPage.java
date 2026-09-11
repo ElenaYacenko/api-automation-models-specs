@@ -18,15 +18,22 @@ public class ClubPage extends BasePage {
     private final SelenideElement authorsName =$(".authors");
     private final SelenideElement descriptionClub =$(".description");
     private final SelenideElement joinButton = $(".join-btn");
+    private final SelenideElement createdButton = $("[data-testid=create-club-link]");
+    private final SelenideElement bookTitleInput = $("#bookTitle");
+    private final SelenideElement authorsInput = $("#bookAuthors");
+    private final SelenideElement yearInput = $("#publicationYear");
+    private final SelenideElement descriptionInput =  $("#description");
+    private final SelenideElement telegramInput = $("#telegramChatLink");
 
-
-
-
+    @Step("[UI] Открытие страницы клуба по id: {clubId}")
+    public ClubPage openMainPage() {
+        open("/");
+        return this;
+    }
 
     @Step("[UI] Открытие страницы клуба по id: {clubId}")
     public ClubPage openPageById(String clubId) {
         open("/clubs/" + clubId);
-
         return this;
     }
 
@@ -46,6 +53,22 @@ public class ClubPage extends BasePage {
     @Step("[UI] Нажать «Присоединиться»")
     public ClubPage pressJoinButton() {
         joinButton.click();
+        return this;
+    }
+
+    @Step("[UI] Нажать «Создать клуб»")
+    public ClubPage createdClubButton() {
+        createdButton.click();
+        return this;
+    }
+
+    @Step("[UI] Создание клуба")
+    public ClubPage createMyClub(String name, String author, String year, String description, String value) {
+        bookTitleInput.setValue(name);
+        authorsInput.setValue(author);
+        yearInput.setValue(year);
+        descriptionInput.setValue(description);
+        telegramInput.setValue("https://t.me/qa_guru" + value).pressEnter();
         return this;
     }
 

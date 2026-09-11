@@ -33,8 +33,8 @@ public class ReviewUiTests extends TestBase {
         }
     }
 
-    private models.clubs.ClubBodyModel uniqueClubBody() {
-        return new models.clubs.ClubBodyModel(
+    private models.clubs.CreateClubBodyModel uniqueClubBody() {
+        return new models.clubs.CreateClubBodyModel(
                 "QA Guru, " + faker.book().title() + "_" + System.currentTimeMillis(),
                 faker.book().author(),
                 faker.number().numberBetween(2000, 2026),
