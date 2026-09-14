@@ -1,0 +1,34 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["count", "results"],
+  "properties": {
+    "count": { "type": "integer" },
+    "next": { "type": ["string", "null"] },
+    "previous": { "type": ["string", "null"] },
+    "results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "club", "user", "review", "assessment", "readPages"],
+        "properties": {
+          "id": { "type": "integer" },
+          "club": { "type": "integer" },
+          "user": {
+            "type": "object",
+            "required": ["id", "username"],
+            "properties": {
+              "id": { "type": "integer" },
+              "username": { "type": "string" }
+            }
+          },
+          "review": { "type": "string" },
+          "assessment": { "type": "integer", "minimum": 1, "maximum": 5 },
+          "readPages": { "type": "integer", "minimum": 0 },
+          "created": { "type": "string" },
+          "modified": { "type": ["string", "null"] }
+        }
+      }
+    }
+  }
+}

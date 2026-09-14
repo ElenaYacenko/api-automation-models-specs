@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["count", "results"],
+  "properties": {
+    "count": { "type": "integer" },
+    "next": { "type": ["string", "null"] },
+    "previous": { "type": ["string", "null"] },
+    "results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "bookTitle", "bookAuthors", "publicationYear", "owner", "created"],
+        "properties": {
+          "id": { "type": "integer" },
+          "bookTitle": { "type": "string" },
+          "bookAuthors": { "type": "string" },
+          "publicationYear": { "type": "integer" },
+          "description": { "type": "string" },
+          "telegramChatLink": { "type": "string" },
+          "owner": { "type": "integer" },
+          "members": { "type": "array", "items": { "type": "integer" } },
+          "reviews": { "type": "array" },
+          "created": { "type": "string" },
+          "modified": { "type": ["string", "null"] }
+        }
+      }
+    }
+  }
+}

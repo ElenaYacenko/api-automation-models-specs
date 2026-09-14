@@ -10,6 +10,5 @@ public class BaseSpec {
     public static RequestSpecification baseRequestSpec = with()
             .filter(new AllureRestAssured())
             .log().all()
-            .contentType(ContentType.JSON)
-            .basePath("/api/v1");
+            .contentType(ContentType.JSON);
 }
