@@ -20,7 +20,7 @@
 ./gradlew allureReport
 ./gradlew allureServe
 ```
-![allure (2).png](images/allure%20%282%29.png)
+![allure.png](images/allure.png)
 
 ## Тесты
 - LoginTests — логин (позитивные + негативные)
