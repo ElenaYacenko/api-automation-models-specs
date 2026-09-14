@@ -8,6 +8,7 @@ public class TestData {
 
     public static final String username = "Kiersten";
     public static final String password = "Sang";
+    public static final String passwordDef = "123456";
     public static final String wrongPassword = "Tempie1";
     public static final String wrongUsername = "Holly1";
     public static final String expectedTokenPath = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9";
@@ -18,11 +19,29 @@ public class TestData {
     public static final String expectedErrorIBlackList = "Token is blacklisted";
     public static final String invalidToken = "invalid.token";
 
+    public static final String emptyString = "";
+    public static final String updatedClubDescription = "Updated club description";
+    public static final String invalidTelegramLink = "invalid-url";
+    public static final String notFoundError = "No Club matches the given query.";
+    public static final String unauthorizedError = "Authentication credentials were not provided.";
+    public static final String negativeYearError = "This field must be positive.";
+    public static final int nonExistentClubId = 999999;
+
     private static final Faker faker = new Faker();
     private static final Faker fakerRu = new Faker(new Locale("ru"));
 
-    public static  final String newUsername = faker.name().lastName();
-    public static  final String newFirstName = fakerRu.name().lastName();
-    public static  final String newLastName = fakerRu.name().lastName();
+    //public static final String newUsername = faker.name().lastName() + "_" + System.currentTimeMillis();
+    public static final String newFirstName = fakerRu.name().lastName() + "_" + System.currentTimeMillis();
+    public static final String newLastName = fakerRu.name().lastName() + "_" + System.currentTimeMillis();
     public static final String newEmail = faker.internet().emailAddress();
+
+    public static final String nameBookClub = "QA Guru, " + faker.book().title() + "_" + System.currentTimeMillis();
+    public static final String nameAuthorClub = faker.book().author();
+    public static final int yearBookClub =faker.number().numberBetween(2000, 2026);
+    public static final String bookDescription =faker.lorem().sentence();
+    public static final String telegram ="https://t.me/" + faker.internet().uuid();
+
+    public static final String errorBookReview = "No BookReview matches the given query.";
+    public static final String errorAssessment = "This field is required.";
+    public static final String errorPermission = "You do not have permission to perform this action.";
 }
