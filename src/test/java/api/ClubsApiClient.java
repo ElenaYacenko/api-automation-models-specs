@@ -1,0 +1,215 @@
+package api;
+
+import io.qameta.allure.Step;
+import io.restassured.response.Response;
+import io.restassured.specification.ResponseSpecification;
+import models.clubs.CreateClubBodyModel;
+import models.clubs.ClubModel;
+import models.clubs.ClubsListResponseModel;
+import net.datafaker.Faker;
+import specs.clubs.ClubsSpec;
+
+import static io.restassured.RestAssured.given;
+import static specs.clubs.ClubsSpec.clubsRequestSpec;
+import static specs.clubs.ClubsSpec.clubsResponse201Spec;
+
+public class ClubsApiClient {
+
+    @Step("[API] Получение списка клубов")
+    public ClubsListResponseModel getClubs() {
+        return given(clubsRequestSpec)
+                .when()
+                .get("/clubs/")
+                .then()
+                .spec(ClubsSpec.clubsResponse200Spec)
+                .extract()
+                .as(ClubsListResponseModel.class);
+    }
+
+    @Step("[API] Получение списка клубов с пагинацией")
+    public ClubsListResponseModel getClubsWithPagination(int limit, int offset) {
+        return given(clubsRequestSpec)
+                .queryParam("limit", limit)
+                .queryParam("offset", offset)
+                .when()
+                .get("/clubs/")
+                .then()
+                .spec(ClubsSpec.clubsResponse200Spec)
+                .extract()
+                .as(ClubsListResponseModel.class);
+    }
+
+    @Step("[API] Получение клуба по id")
+    public ClubModel getClub(Integer clubId) {
+        return given(clubsRequestSpec)
+                .pathParam("id", clubId)
+                .when()
+                .get("/clubs/{id}/")
+                .then()
+                .spec(ClubsSpec.clubsResponse200Spec)
+                .extract()
+                .as(ClubModel.class);
+    }
+
+    @Step("[API] Поиск клубов по названию: {query}")
+    public ClubsListResponseModel searchClubs(String query) {
+        return given(clubsRequestSpec)
+                .queryParam("search", query)
+                .when()
+                .get("/clubs/")
+                .then()
+                .spec(ClubsSpec.clubsResponse200Spec)
+                .extract()
+                .as(ClubsListResponseModel.class);
+    }
+
+    @Step("[API] Получение клуба по id с кастомной спецификацией")
+    public Response getClubWithSpec(Integer clubId, ResponseSpecification spec) {
+        return given(clubsRequestSpec)
+                .pathParam("id", clubId)
+                .when()
+                .get("/clubs/{id}/")
+                .then()
+                .spec(spec)
+                .extract()
+                .response();
+    }
+
+    @Step("[API] Создание клуба")
+    public ClubModel createClub(String accessToken, models.clubs.CreateClubBodyModel body) {
+        return given(clubsRequestSpec)
+                .auth().oauth2(accessToken)
+                .body(body)
+                .when()
+                .post("/clubs/")
+                .then()
+                .spec(clubsResponse201Spec)
+                .extract()
+                .as(ClubModel.class);
+    }
+
+    @Step("[API] Создание клуба с кастомной спецификацией")
+    public Response createClubWithSpec(String accessToken, models.clubs.CreateClubBodyModel body, ResponseSpecification spec) {
+        var request = given(clubsRequestSpec);
+        if (accessToken != null && !accessToken.isEmpty()) {
+            request.auth().oauth2(accessToken);
+        }
+        return request
+                .body(body)
+                .when()
+                .post("/clubs/")
+                .then()
+                .spec(spec)
+                .extract()
+                .response();
+    }
+
+    @Step("[API] Создание рандомного клуба POST /clubs/")
+    public ClubModel createRandomClub(String accessToken) {
+        Faker faker = new Faker();
+        String bookTitle = faker.book().title();
+        String bookAuthors = faker.book().author();
+        Integer publicationYear = 2009;
+        String description = faker.lorem().sentence();
+        String telegramChatLink = "https://t.me/qa_guru";
+
+        CreateClubBodyModel createClubBody = new CreateClubBodyModel(
+                bookTitle,
+                bookAuthors,
+                publicationYear,
+                description,
+                telegramChatLink
+        );
+
+        return createClub(accessToken, createClubBody);
+    }
+
+    @Step("[API] Полное обновление клуба")
+    public ClubModel updateClub(String accessToken, Integer clubId, models.clubs.CreateClubBodyModel body) {
+        return given(clubsRequestSpec)
+                .auth().oauth2(accessToken)
+                .pathParam("id", clubId)
+                .body(body)
+                .when()
+                .put("/clubs/{id}/")
+                .then()
+                .spec(ClubsSpec.clubsResponse200Spec)
+                .extract()
+                .as(ClubModel.class);
+    }
+
+    @Step("[API] Полное обновление клуба с кастомной спецификацией")
+    public Response updateClubWithSpec(String accessToken, Integer clubId, models.clubs.CreateClubBodyModel body, ResponseSpecification spec) {
+        var request = given(clubsRequestSpec);
+        if (accessToken != null && !accessToken.isEmpty()) {
+            request.auth().oauth2(accessToken);
+        }
+        return request
+                .pathParam("id", clubId)
+                .body(body)
+                .when()
+                .put("/clubs/{id}/")
+                .then()
+                .spec(spec)
+                .extract()
+                .response();
+    }
+
+    @Step("[API] Частичное обновление клуба")
+    public ClubModel patchClub(String accessToken, Integer clubId, models.clubs.ClubPatchUpdateDescriptionBodyModel body) {
+        return given(clubsRequestSpec)
+                .auth().oauth2(accessToken)
+                .pathParam("id", clubId)
+                .body(body)
+                .when()
+                .patch("/clubs/{id}/")
+                .then()
+                .spec(ClubsSpec.clubsResponse200Spec)
+                .extract()
+                .as(ClubModel.class);
+    }
+
+    @Step("[API] Частичное обновление клуба с кастомной спецификацией")
+    public Response patchClubWithSpec(String accessToken, Integer clubId, models.clubs.ClubPatchUpdateDescriptionBodyModel body, ResponseSpecification spec) {
+        var request = given(clubsRequestSpec);
+        if (accessToken != null && !accessToken.isEmpty()) {
+            request.auth().oauth2(accessToken);
+        }
+        return request
+                .pathParam("id", clubId)
+                .body(body)
+                .when()
+                .patch("/clubs/{id}/")
+                .then()
+                .spec(spec)
+                .extract()
+                .response();
+    }
+
+    @Step("[API] Удаление клуба")
+    public void deleteClub(String accessToken, Integer clubId) {
+        given(clubsRequestSpec)
+                .auth().oauth2(accessToken)
+                .pathParam("id", clubId)
+                .when()
+                .delete("/clubs/{id}/")
+                .then()
+                .spec(ClubsSpec.clubsResponse204Spec);
+    }
+
+    @Step("[API] Удаление клуба с кастомной спецификацией")
+    public Response deleteClubWithSpec(String accessToken, Integer clubId, ResponseSpecification spec) {
+        var request = given(clubsRequestSpec);
+        if (accessToken != null && !accessToken.isEmpty()) {
+            request.auth().oauth2(accessToken);
+        }
+        return request
+                .pathParam("id", clubId)
+                .when()
+                .delete("/clubs/{id}/")
+                .then()
+                .spec(spec)
+                .extract()
+                .response();
+    }
+}
