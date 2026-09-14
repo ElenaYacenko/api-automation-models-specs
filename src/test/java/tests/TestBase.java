@@ -45,7 +45,7 @@ public class TestBase {
             Configuration.remote = remoteUrl;
         }
         Configuration.browser = System.getProperty("browser", "chrome");
-        Configuration.browserVersion = System.getProperty("browserVersion", "");
+        Configuration.browserVersion = System.getProperty("browserVersion", "152.0");
         Configuration.headless = Boolean.parseBoolean(System.getProperty("headless", "false"));
         Configuration.browserSize = System.getProperty("browserSize", "1920x1080");
 
