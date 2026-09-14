@@ -22,6 +22,12 @@ import static tests.TestData.*;
 public class ReviewUiTests extends TestBase {
     private String accessToken;
     private Integer createdClubId;
+    private String newUsername;
+
+    @BeforeEach
+    public void prepareTestData() {
+        newUsername = faker.name().lastName() + "_" + System.currentTimeMillis();
+    }
 
     @AfterEach
     public void cleanup() {
@@ -164,7 +170,7 @@ public class ReviewUiTests extends TestBase {
         );
 
         step("API: Проверка, что отзыв физически удален (ожидаем 404)", () -> {
-            var response = api.reviews.getReviewWithSpec(accessToken, createdReviewId, reviewsResponse404Spec);
+            var response = api.reviews.getReviewWithSpec(createdReviewId, reviewsResponse404Spec);
             assertThat(response.path("detail").toString()).isEqualTo(errorBookReview);
         });
     }

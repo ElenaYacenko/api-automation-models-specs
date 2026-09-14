@@ -4,6 +4,7 @@ import io.qameta.allure.*;
 import models.clubs.ClubModel;
 import models.clubs.ClubsListResponseModel;
 import models.login.LoginBodyModel;
+import models.registration.RegistrationBodyModel;
 import org.junit.jupiter.api.*;
 
 import static io.qameta.allure.Allure.step;
@@ -17,13 +18,17 @@ import static tests.TestData.*;
 @Story("CRUD /api/v1/clubs/")
 public class ClubsTests extends TestBase {
 
+    private String nameUser;
     private String accessToken;
-    private Integer createdClubId; // Для гарантированной очистки
+    private Integer createdClubId; // для гарантированной очистки
 
     @BeforeEach
-    public void auth() {
-        String username = faker.name().lastName() + "_" + System.currentTimeMillis();
-        LoginBodyModel loginData = new LoginBodyModel(username, password);
+    public void prepareTestData() {
+        nameUser = faker.name().lastName() + "_" + System.currentTimeMillis();
+        RegistrationBodyModel registrationData = new RegistrationBodyModel(nameUser, passwordDef);
+        api.users.register(registrationData);
+
+        LoginBodyModel loginData = new LoginBodyModel(nameUser, passwordDef);
         accessToken = api.auth.login(loginData).access();
     }
 

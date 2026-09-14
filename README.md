@@ -39,6 +39,7 @@
 ./gradlew test -DincludeTags="security"
 ```
 ## Allure-отчёт
+
 ```bash
 # Сгенерировать HTML-отчёт
 ./gradlew allureReport
@@ -50,30 +51,34 @@
 ![allure (2).png](images/allure%20%282%29.png)
 
 ## Покрытие
+
 ### API-тесты
-Клубы (/api/v1/clubs/):
+
+**Клубы** (/api/v1/clubs/):
 - CRUD: create, get list, get by id, put, patch, delete
 - Негативные: 404, 401, 400
 - Права доступа: чужой клуб → 403
 
-Отзывы (/api/v1/clubs/reviews/):
+**Отзывы** (/api/v1/clubs/reviews/):
 - CRUD: create, get list, get by id, put, patch, delete
 - Негативные: 404, 400 (без assessment)
 - Права доступа: чужой отзыв → 403 (update, delete)
 
 ### UI-тесты (гибридные: API-подготовка + UI-проверка)
-Клубы:
+
+**Клубы**:
 - createClubFromUi — создание через форму → проверка через API
 - clubIsVisibleOnPage — отображение клуба
 - ownerCannotLeaveClubFromUi — владелец не может покинуть клуб
 
-Отзывы:
+**Отзывы**:
 - reviewIsVisibleOnClubPage — отображение отзыва
 - createReviewFromUi — создание через форму → проверка через API
 - deleteReviewFromUi — удаление с alert → проверка через API
 - createReviewInForeignClubFromUi — отзыв в чужом клубе
 
 ## Ключевые практики
+
 * Гибридный подход: подготовка данных через API, UI проверяет отображение и клики.
 * Уникальность данных: System.currentTimeMillis() + DataFaker для избежания flaky-тестов.
 * Read-after-write: после создания/обновления — повторный GET для проверки консистентности.

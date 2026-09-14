@@ -18,12 +18,15 @@ import static tests.TestData.*;
 @Feature("Управление отзывами пользователя")
 public class ReviewTests extends TestBase {
     private String nameUser;
+    private String newUsername;
     private String accessToken;
     private Integer createdClubId; // для гарантированной очистки
 
     @BeforeEach
     public void prepareTestData() {
         nameUser = faker.name().lastName() + "_" + System.currentTimeMillis();
+        newUsername = faker.name().lastName() + "_" + System.currentTimeMillis();
+
         RegistrationBodyModel registrationData = new RegistrationBodyModel(nameUser, passwordDef);
         api.users.register(registrationData);
 
@@ -47,7 +50,7 @@ public class ReviewTests extends TestBase {
 
     private models.clubs.CreateClubBodyModel uniqueClubBody() {
         return new models.clubs.CreateClubBodyModel(
-                "QA Guru, " + faker.book().title(),
+                "QA Guru, " + faker.book().title()+ "_" + System.currentTimeMillis(),
                 faker.book().author(),
                 faker.number().numberBetween(2000, 2026),
                 faker.lorem().sentence(),
@@ -291,7 +294,7 @@ public class ReviewTests extends TestBase {
         api.reviews.deleteReview(accessToken, createdReviewId);
 
         step("Проверка, что отзыв удалён (404)", () -> {
-            var response = api.reviews.getReviewWithSpec(accessToken, createdReviewId, reviewsResponse404Spec);
+            var response = api.reviews.getReviewWithSpec(createdReviewId, reviewsResponse404Spec);
             assertThat(response.path("detail").toString()).isEqualTo(errorBookReview);
         });
     }
@@ -304,7 +307,7 @@ public class ReviewTests extends TestBase {
     public void errorGetReviewByIdTest() {
         int invalidReviewId = 000000;
 
-        Response response = api.reviews.getReviewWithSpec(accessToken, invalidReviewId, reviewsResponse404Spec);
+        Response response = api.reviews.getReviewWithSpec(invalidReviewId, reviewsResponse404Spec);
 
         step("Валидация ошибки", () -> {
             assertThat(response.path("detail").toString()).isEqualTo(errorBookReview);
@@ -371,18 +374,15 @@ public class ReviewTests extends TestBase {
 
             assertThat(after.review())
                     .as("текст отзыва не изменился")
-                    .isEqualTo(originalReviewText)
-                    .isNotEqualTo("Hacked!");
+                    .isEqualTo(originalReviewText);
 
             assertThat(after.assessment())
                     .as("assessment не изменился")
-                    .isEqualTo(originalAssessment)
-                    .isNotEqualTo(5);
+                    .isEqualTo(originalAssessment);
 
             assertThat(after.readPages())
                     .as("readPages не изменился")
-                    .isEqualTo(originalReadPages)
-                    .isNotEqualTo(999);
+                    .isEqualTo(originalReadPages);
 
             assertThat(after.modified())
                     .as("modified не должен обновиться (отзыв не редактировался)")

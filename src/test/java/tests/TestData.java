@@ -30,7 +30,7 @@ public class TestData {
     private static final Faker faker = new Faker();
     private static final Faker fakerRu = new Faker(new Locale("ru"));
 
-    public static final String newUsername = faker.name().lastName() + "_" + System.currentTimeMillis();
+    //public static final String newUsername = faker.name().lastName() + "_" + System.currentTimeMillis();
     public static final String newFirstName = fakerRu.name().lastName() + "_" + System.currentTimeMillis();
     public static final String newLastName = fakerRu.name().lastName() + "_" + System.currentTimeMillis();
     public static final String newEmail = faker.internet().emailAddress();

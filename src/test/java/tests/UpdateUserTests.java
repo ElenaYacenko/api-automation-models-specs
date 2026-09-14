@@ -20,15 +20,13 @@ import static tests.TestData.*;
 @Feature("Обновление данных пользователя")
 
 public class UpdateUserTests extends TestBase {
-
-    String usernameUser;
-    String passwordUser;
+    private String nameUser;
+    private String newUsername;
 
     @BeforeEach
     public void prepareTestData() {
-
-        usernameUser = "user_" + System.currentTimeMillis();
-        passwordUser = "pass_" + System.currentTimeMillis();
+        nameUser = faker.name().lastName() + "_" + System.currentTimeMillis();
+        newUsername = faker.name().lastName() + "_" + System.currentTimeMillis();
     }
 
     @Test
@@ -42,12 +40,12 @@ public class UpdateUserTests extends TestBase {
     @Severity(SeverityLevel.CRITICAL)
     public void successfulUpdatePutTests() {
 
-        RegistrationBodyModel registrationData = new RegistrationBodyModel(usernameUser, passwordUser);
+        RegistrationBodyModel registrationData = new RegistrationBodyModel(nameUser, passwordDef);
         SuccessfulRegistrationResponseModel registrationResponse = api.users.register(registrationData);
         Integer userId = registrationResponse.id();
-        assertThat(registrationResponse.username()).isEqualTo(usernameUser);
+        assertThat(registrationResponse.username()).isEqualTo(nameUser);
 
-        LoginBodyModel loginData = new LoginBodyModel(usernameUser, passwordUser);
+        LoginBodyModel loginData = new LoginBodyModel(nameUser, passwordDef);
         SuccessfulLoginResponseModel loginResponse = api.auth.login(loginData);
         String accessToken = loginResponse.access();
 
@@ -91,14 +89,14 @@ public class UpdateUserTests extends TestBase {
     @Severity(SeverityLevel.NORMAL)
     public void successfulPatchUserFirstNameOnly() {
 
-        RegistrationBodyModel registrationData = new RegistrationBodyModel(usernameUser, passwordUser);
+        RegistrationBodyModel registrationData = new RegistrationBodyModel(nameUser, passwordDef);
         SuccessfulRegistrationResponseModel registrationResponse = api.users.register(registrationData);
 
         Integer userId = registrationResponse.id();
         String originalUsername = registrationResponse.username();
         String originalEmail = registrationResponse.email();
 
-        LoginBodyModel loginData = new LoginBodyModel(usernameUser, passwordUser);
+        LoginBodyModel loginData = new LoginBodyModel(nameUser, passwordDef);
         SuccessfulLoginResponseModel loginResponse = api.auth.login(loginData);
         String accessToken = loginResponse.access();
 
@@ -141,13 +139,13 @@ public class UpdateUserTests extends TestBase {
     @Severity(SeverityLevel.NORMAL)
     public void successfulPatchUserEmailOnly() {
 
-        RegistrationBodyModel registrationData = new RegistrationBodyModel(usernameUser, passwordUser);
+        RegistrationBodyModel registrationData = new RegistrationBodyModel(nameUser, passwordDef);
         SuccessfulRegistrationResponseModel registrationResponse = api.users.register(registrationData);
 
         Integer userId = registrationResponse.id();
         String originalUsername = registrationResponse.username();
 
-        LoginBodyModel loginData = new LoginBodyModel(usernameUser, passwordUser);
+        LoginBodyModel loginData = new LoginBodyModel(nameUser, passwordDef);
         SuccessfulLoginResponseModel loginResponse = api.auth.login(loginData);
 
         String accessToken = loginResponse.access();
@@ -191,12 +189,12 @@ public class UpdateUserTests extends TestBase {
     @Severity(SeverityLevel.NORMAL)
     public void updateUserWithEmptyUsernameTest() {
 
-        RegistrationBodyModel registrationData = new RegistrationBodyModel(usernameUser, passwordUser);
+        RegistrationBodyModel registrationData = new RegistrationBodyModel(nameUser, passwordDef);
         SuccessfulRegistrationResponseModel registrationResponse = api.users.register(registrationData);
         Integer userId = registrationResponse.id();
 
 
-        LoginBodyModel loginData = new LoginBodyModel(usernameUser, passwordUser);
+        LoginBodyModel loginData = new LoginBodyModel(nameUser, passwordDef);
 
         SuccessfulLoginResponseModel loginResponse = api.auth.login(loginData);
         String accessToken = loginResponse.access();

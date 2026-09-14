@@ -74,7 +74,7 @@ public class ClubsUITests extends TestBase {
         SuccessfulLoginResponseModel loginResponse = clubPage.openBlankPageWithNewUser();
         String accessToken = loginResponse.access();
 
-        models.clubs.ClubModel createdClub = api.clubs.createRandomClub(accessToken);
+        models.clubs.ClubModel createdClub = api.clubs.createClub(accessToken, uniqueClubBody());
         String clubId = createdClub.id().toString();
 
         step("UI: Попытка покинуть клуб и проверка появления ошибки для владельца", () ->

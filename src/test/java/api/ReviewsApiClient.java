@@ -90,9 +90,8 @@ public class ReviewsApiClient {
     }
 
     @Step("[API] Получение отзыва по id с кастомной спецификацией")
-    public Response getReviewWithSpec(String accessToken, Integer reviewId, ResponseSpecification spec) {
+    public Response getReviewWithSpec(Integer reviewId, ResponseSpecification spec) {
         return given(baseRequestSpec)
-                .auth().oauth2(accessToken)
                 .pathParam("id", reviewId)
                 .when()
                 .get("/clubs/reviews/{id}/")
