@@ -241,7 +241,7 @@ public class ReviewTests extends TestBase {
 
         ReviewPatchBodyModel updateData = new ReviewPatchBodyModel(
                 faker.lorem().sentence(),
-                faker.number().numberBetween(1, 6),
+                faker.number().numberBetween(1, 3),
                 faker.number().numberBetween(1, 500)
         );
 
