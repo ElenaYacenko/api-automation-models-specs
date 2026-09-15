@@ -37,24 +37,28 @@ public class TestBase {
         RestAssured.baseURI = "https://book-club.qa.guru";
         RestAssured.basePath = "/api/v1";
 
-        Configuration.baseUrl = "https://book-club.qa.guru";
-        Configuration.browserSize = "1920x1080";
-
-        String remoteUrl = System.getProperty("remoteUrl");
-        if (remoteUrl != null && !remoteUrl.isBlank()) {
-            Configuration.remote = remoteUrl;
-        }
+        Configuration.baseUrl = System.getProperty("url", "https://book-club.qa.guru");
         Configuration.browser = System.getProperty("browser", "chrome");
-        Configuration.browserVersion = System.getProperty("browserVersion", "152.0");
+        Configuration.browserVersion = System.getProperty("browserVersion", "");
         Configuration.headless = Boolean.parseBoolean(System.getProperty("headless", "false"));
         Configuration.browserSize = System.getProperty("browserSize", "1920x1080");
 
-        DesiredCapabilities capabilities = new DesiredCapabilities();
-        capabilities.setCapability("selenoid:options", Map.of(
-                "enableVNC", true,
-                "enableVideo", true
-        ));
-        Configuration.browserCapabilities = capabilities;
+        String remote = System.getProperty("remote");
+        if (remote != null && !remote.isEmpty()) {
+            Configuration.remote = remote;
+            DesiredCapabilities capabilities = new DesiredCapabilities();
+            capabilities.setCapability("selenoid:options", Map.<String, Object>of(
+                    "enableVNC", true,
+                    "enableVideo", true,
+                    "enableLog", true
+            ));
+            Configuration.browserCapabilities = capabilities;
+    }
+        // Логирование для проверки
+        System.out.println("URL: " + Configuration.baseUrl);
+        System.out.println("Browser: " + Configuration.browser);
+        System.out.println("Browser size: " + Configuration.browserSize);
+        System.out.println("Remote: " + Configuration.remote);
     }
 
     @BeforeEach
