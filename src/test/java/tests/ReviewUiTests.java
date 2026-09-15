@@ -26,7 +26,7 @@ public class ReviewUiTests extends TestBase {
 
     @BeforeEach
     public void prepareTestData() {
-        newUsername = faker.name().lastName() + "_" + System.currentTimeMillis();
+        newUsername = faker.name().username() + "_" + System.currentTimeMillis();
     }
 
     @AfterEach

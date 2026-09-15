@@ -24,8 +24,8 @@ public class ReviewTests extends TestBase {
 
     @BeforeEach
     public void prepareTestData() {
-        nameUser = faker.name().lastName() + "_" + System.currentTimeMillis();
-        newUsername = faker.name().lastName() + "_" + System.currentTimeMillis();
+        nameUser = faker.name().username() + "_" + System.currentTimeMillis();
+        newUsername = faker.name().username() + "_" + System.currentTimeMillis();
 
         RegistrationBodyModel registrationData = new RegistrationBodyModel(nameUser, passwordDef);
         api.users.register(registrationData);
